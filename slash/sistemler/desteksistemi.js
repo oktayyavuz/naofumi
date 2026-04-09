@@ -9,7 +9,7 @@ module.exports = {
         {
             name: 'komut',
             description: 'Destek sistemini aç veya kapat',
-            type: 3, 
+            type: 3,
             required: true,
             choices: [
                 {
@@ -24,8 +24,8 @@ module.exports = {
         }
     ],
     run: async (client, interaction) => {
-        if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
-            return message.reply('❗ Bu komutu kullanmak için yönetici olmanız gerekiyor.');
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+            return interaction.reply({ content: '❗ Bu komutu kullanmak için yönetici olmanız gerekiyor.', ephemeral: true });
         }
         const subCommand = interaction.options.getString('komut');
 

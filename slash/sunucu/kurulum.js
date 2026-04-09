@@ -121,14 +121,13 @@ async function roleSetup(interaction) {
         { name: '☢️ Mute', color: "#878383", permissions: [PermissionsBitField.Flags.ViewChannel], hoist: false }
     ];
 
-    interaction.guild.roles.cache.forEach(async (role) => {
-        if (role.name !== '@everyone' && !role.managed) {
-            try {
-                await role.delete();
-            } catch (error) {
-            }
+    const existingRoles = interaction.guild.roles.cache.filter(role => role.name !== '@everyone' && !role.managed);
+    for (const [id, role] of existingRoles) {
+        try {
+            await role.delete().catch(() => {});
+        } catch (error) {
         }
-    });
+    }
 
     for (const roleData of rolesToCreate) {
         try {
@@ -141,12 +140,12 @@ async function roleSetup(interaction) {
             
             if (roleData.name === '☢️ Mute') {
                 const channels = interaction.guild.channels.cache.filter(c => c.type !== ChannelType.GuildCategory);
-                channels.forEach(async channel => {
+                for (const [id, channel] of channels) {
                     await channel.permissionOverwrites.edit(createdRole, {
                         SendMessages: false,
                         AddReactions: false
-                    });
-                });
+                    }).catch(() => {});
+                }
             }
         } catch (error) {
         }
@@ -217,7 +216,14 @@ async function emojiSetup(interaction) {
         }
 
         for (const file of files) {
-            const emojiName = path.parse(file).name;
+            let emojiName = path.parse(file).name;
+
+            // Sanitize emoji name: remove invalid characters (only alphanumeric and underscores allowed)
+            emojiName = emojiName.replace(/[^a-zA-Z0-9_]/g, '');
+
+            // Ensure name is within Discord's 2-32 character limit
+            if (emojiName.length < 2) emojiName = `emoji_${emojiName}`;
+            if (emojiName.length > 32) emojiName = emojiName.substring(0, 32);
 
             const existingEmoji = interaction.guild.emojis.cache.find(e => e.name === emojiName);
             if (existingEmoji) {

@@ -13,8 +13,10 @@ exports.run = async (client, message, args) => {
         const parentCategory = channel.parent;
         const position = channel.position;
 
+        // Delete the channel
         await channel.delete();
 
+        // Create the new channel
         const newChannel = await message.guild.channels.create({
             name: channelName,
             type: channelType,
@@ -26,7 +28,7 @@ exports.run = async (client, message, args) => {
 
         const embed = new EmbedBuilder()
             .setColor(Colors.Green)
-            .setDescription(`**${channelName}** kanalı başarıyla silindi ve aynı kategoride ve sırada tekrar oluşturuldu.`)
+            .setDescription(`**${channelName}** kanalı başarıyla silindi ve tekrar oluşturuldu.`)
             .setTimestamp();
         
         try {
@@ -37,13 +39,21 @@ exports.run = async (client, message, args) => {
 
     } catch (error) {
         console.error("Kanal silinirken veya yeniden oluşturulurken bir hata oluştu:", error);
+        
         const embed = new EmbedBuilder()
             .setColor(Colors.Red)
             .setDescription("Kanal silinirken veya yeniden oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.")
             .setTimestamp();
         
+        // Only try to send message to message.channel if it wasn't deleted
+        // message.channel.send might throw if the channel is gone.
         try {
-            await message.channel.send({ embeds: [embed] });
+            if (message.channel && !message.channel.partial && message.guild.channels.cache.has(message.channelId)) {
+                await message.channel.send({ embeds: [embed] }).catch(() => {});
+            } else {
+                // Channel is likely deleted, send to user's DM instead
+                await message.author.send({ embeds: [embed] }).catch(() => {});
+            }
         } catch (sendError) {
             console.error("Hata mesajı gönderilirken bir hata oluştu:", sendError);
         }

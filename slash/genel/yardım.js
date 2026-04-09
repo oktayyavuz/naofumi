@@ -42,6 +42,9 @@ module.exports = {
                     { name: "> sunucupp", description: "\n Sunucu profilini gösterir." },
                     { name: "> yardım", description: "\n Komutlar hakkında yardım sağlar." },
                     { name: "> yaz", description: "\n Yazdığınız metni yazar." },
+                    { name: "> anket", description: "\n **(YENİ)** Basit bir anket oluşturur **(yanlızca slash)**." },
+                    { name: "> öneri", description: "\n **(YENİ)** Sunucu için öneride bulunursunuz **(yanlızca slash)**." },
+                    { name: "> öneri-ayarla", description: "\n **(YENİ)** Öneri kanalını ayarlar **(yanlızca slash)**." },
                     { name: "> ping", description: "\n Pingi gösterir." },
                     { name: "> bilgi", description: "\n Botun detaylı bilgilerini gösterir." },
                     { name: "> havadurumu", description: "\n Belirtilen şehrin hava durumunu gösterir." },
@@ -69,7 +72,8 @@ module.exports = {
                 "Koruma": [
                     { name: "> koruma", description: "\n Koruma sistemlerini aç/kapat." },
                     { name: "> wlrole/whitelistrole", description: "\n Koruma sistemlerinden muaf tutulacak rolleri yönetir." },
-                    { name: "> antiraid", description: "\n Sunucuyu ani saldırılardan korumak için anti-raid sistemini ayarlar." }
+                    { name: "> antiraid", description: "\n Sunucuyu ani saldırılardan korumak için anti-raid sistemini ayarlar." },
+                    { name: "> log-kur", description: "\n **(YENİ)** Sunucuda mod, mesaj, ses ve sunucu loglarını otomatik kurar **(yanlızca slash)**." }
                 ],
                 "Destek": [
                     { name: "> desteksistemi", description: "\n Destek sistemini açmaya veye kapatmaya yarar." },
@@ -92,7 +96,7 @@ module.exports = {
             .setColor(Colors.Blue)
             .setTimestamp();
 
-        const homepageButtons = Object.keys(categories).map(category => 
+        const homepageButtons = Object.keys(categories).map(category =>
             new ButtonBuilder()
                 .setCustomId(category)
                 .setLabel(category)
@@ -102,15 +106,15 @@ module.exports = {
 
         const homepageActionRow = new ActionRowBuilder().addComponents(homepageButtons);
 
-        const reply = await interaction.reply({ 
-            embeds: [homepageEmbed], 
+        const reply = await interaction.reply({
+            embeds: [homepageEmbed],
             components: [homepageActionRow],
             ephemeral: false
         });
 
-        const collector = reply.createMessageComponentCollector({ 
-            componentType: ComponentType.Button, 
-            time: 60000 
+        const collector = reply.createMessageComponentCollector({
+            componentType: ComponentType.Button,
+            time: 60000
         });
 
         let currentPage = 0;
@@ -129,9 +133,9 @@ module.exports = {
                 currentCategory = null;
                 isSubcategory = false;
                 currentPage = 0;
-                await buttonInteraction.update({ 
-                    embeds: [homepageEmbed], 
-                    components: [homepageActionRow] 
+                await buttonInteraction.update({
+                    embeds: [homepageEmbed],
+                    components: [homepageActionRow]
                 });
             } else if (categories[buttonInteraction.customId] && !isSubcategory) {
                 currentCategory = buttonInteraction.customId;
@@ -167,13 +171,13 @@ module.exports = {
 
                     const categoryActionRow = new ActionRowBuilder().addComponents(previousButton, nextButton, backButton);
 
-                    await buttonInteraction.update({ 
-                        embeds: [categoryEmbed], 
-                        components: [categoryActionRow] 
+                    await buttonInteraction.update({
+                        embeds: [categoryEmbed],
+                        components: [categoryActionRow]
                     });
                 } else {
                     const subcategories = Object.keys(categories[currentCategory]);
-                    const subcategoryButtons = subcategories.map(subcategory => 
+                    const subcategoryButtons = subcategories.map(subcategory =>
                         new ButtonBuilder()
                             .setCustomId(subcategory)
                             .setLabel(subcategory)
@@ -189,7 +193,7 @@ module.exports = {
 
                     const subcategoryActionRow = new ActionRowBuilder().addComponents(subcategoryButtons, backButton);
 
-                    await buttonInteraction.update({ 
+                    await buttonInteraction.update({
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle(`${currentCategory} Kategorileri`)
@@ -197,8 +201,8 @@ module.exports = {
                                 .setImage('https://media.tenor.com/_3euyl5JqWAAAAAM/naofumi-iwatani.gif')
                                 .setColor(Colors.Blue)
                                 .setTimestamp()
-                        ], 
-                        components: [subcategoryActionRow] 
+                        ],
+                        components: [subcategoryActionRow]
                     });
                 }
             } else if (currentCategory && categories[currentCategory][buttonInteraction.customId] && !isSubcategory) {
@@ -234,9 +238,9 @@ module.exports = {
 
                 const subcategoryActionRow = new ActionRowBuilder().addComponents(previousButton, nextButton, backButton);
 
-                await buttonInteraction.update({ 
-                    embeds: [subcategoryEmbed], 
-                    components: [subcategoryActionRow] 
+                await buttonInteraction.update({
+                    embeds: [subcategoryEmbed],
+                    components: [subcategoryActionRow]
                 });
             } else if (buttonInteraction.customId === 'previous') {
                 currentPage--;
@@ -285,16 +289,16 @@ module.exports = {
 
                 const updatedActionRow = new ActionRowBuilder().addComponents(previousButton, nextButton, backButton);
 
-                await buttonInteraction.update({ 
-                    embeds: [updatedEmbed], 
-                    components: [updatedActionRow] 
+                await buttonInteraction.update({
+                    embeds: [updatedEmbed],
+                    components: [updatedActionRow]
                 });
             }
         });
 
         collector.on('end', async () => {
-            await interaction.editReply({ 
-                components: [] 
+            await interaction.editReply({
+                components: []
             });
         });
     }

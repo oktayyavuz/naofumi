@@ -54,58 +54,6 @@ module.exports = {
 
                 await interaction.reply({ embeds: [embed], components: [buttonRow] });
 
-                client.on('interactionCreate', async (buttonInteraction) => {
-                    if (!buttonInteraction.isButton()) return;
-                    if (buttonInteraction.customId !== 'edit-welcome-goodbye') return;
-
-                    const modal = new ModalBuilder()
-                        .setCustomId('welcomeGoodbyeModal')
-                        .setTitle('Hoşgeldin ve Güle Güle Mesajlarını Düzenle');
-
-                    const welcomeInput = new TextInputBuilder()
-                        .setCustomId('welcomeMessageInput')
-                        .setLabel('Hoşgeldin Mesajı')
-                        .setStyle(TextInputStyle.Paragraph)
-                        .setPlaceholder('Sunucumuza hoş geldin, {user}!')
-                        .setRequired(false);
-
-                    const goodbyeInput = new TextInputBuilder()
-                        .setCustomId('goodbyeMessageInput')
-                        .setLabel('Güle Güle Mesajı')
-                        .setStyle(TextInputStyle.Paragraph)
-                        .setPlaceholder('{user}, aramızdan ayrıldı. Kendisine iyi şanslar dileriz!')
-                        .setRequired(false);
-
-                    const modalRow1 = new ActionRowBuilder().addComponents(welcomeInput);
-                    const modalRow2 = new ActionRowBuilder().addComponents(goodbyeInput);
-
-                    modal.addComponents(modalRow1, modalRow2);
-
-                    await buttonInteraction.showModal(modal);
-                });
-
-                client.on('interactionCreate', async (modalInteraction) => {
-                    if (!modalInteraction.isModalSubmit()) return;
-                    if (modalInteraction.customId !== 'welcomeGoodbyeModal') return;
-
-                    const welcomeMessage = modalInteraction.fields.getTextInputValue('welcomeMessageInput');
-                    const goodbyeMessage = modalInteraction.fields.getTextInputValue('goodbyeMessageInput');
-
-                    if (welcomeMessage) {
-                        await db.set(`welcomeMessage_${interaction.guild.id}`, welcomeMessage);
-                    } else {
-                        await db.delete(`welcomeMessage_${interaction.guild.id}`);
-                    }
-
-                    if (goodbyeMessage) {
-                        await db.set(`goodbyeMessage_${interaction.guild.id}`, goodbyeMessage);
-                    } else {
-                        await db.delete(`goodbyeMessage_${interaction.guild.id}`);
-                    }
-
-                    await modalInteraction.reply({ content: 'Hoşgeldin ve Güle Güle mesajları başarıyla güncellendi!', ephemeral: true });
-                });
-
             } catch (error) {
                 console.error('Hoşgeldin-BB mesajları ayarlanırken hata oluştu:', error);
                 await interaction.reply({ content: 'Hoşgeldin-BB mesajları ayarlanırken bir hata oluştu.', ephemeral: true });

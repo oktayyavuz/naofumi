@@ -1,33 +1,34 @@
+require('dotenv').config();
 const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
 const config = require("./config.js");
-const db = require("./croxydb/croxydb.json");
+const db = require("croxydb");
 
 const client = new Client({
   partials: [
-    Partials.Message, 
-    Partials.Channel, 
+    Partials.Message,
+    Partials.Channel,
     Partials.GuildMember,
-    Partials.Reaction, 
-    Partials.GuildScheduledEvent, 
-    Partials.User, 
-    Partials.ThreadMember, 
+    Partials.Reaction,
+    Partials.GuildScheduledEvent,
+    Partials.User,
+    Partials.ThreadMember,
   ],
   intents: [
-    GatewayIntentBits.Guilds, 
+    GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildEmojisAndStickers,
     GatewayIntentBits.GuildIntegrations,
     GatewayIntentBits.GuildWebhooks,
-    GatewayIntentBits.GuildInvites, 
-    GatewayIntentBits.GuildVoiceStates, 
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMessageTyping,
     GatewayIntentBits.DirectMessages,
-    GatewayIntentBits.DirectMessageReactions, 
+    GatewayIntentBits.DirectMessageReactions,
     GatewayIntentBits.DirectMessageTyping,
-    GatewayIntentBits.MessageContent, 
+    GatewayIntentBits.MessageContent,
   ],
   failIfNotExists: false,
   allowedMentions: {
@@ -36,35 +37,27 @@ const client = new Client({
   }
 });
 
-process.on('unhandledRejection', (error, promise) => {
-  console.error('Yakalanamayan Promise Reddi:');
-  console.error(`Promise: ${promise}`);
-  console.error(`Hata: ${error}`);
-  console.error(error.stack || error);
-  
+const logToChannel = async (title, error) => {
   if (client.isReady() && config.logChannelId) {
     const logChannel = client.channels.cache.get(config.logChannelId);
     if (logChannel) {
-      logChannel.send({
-        content: `⚠️ **Kritik Hata Bilgisi**\n\`\`\`js\n${error.stack || error}\n\`\`\`\nTarih: ${new Date().toLocaleString('tr-TR')}`
+      const errorStack = error.stack || error;
+      const truncatedStack = errorStack.length > 1900 ? errorStack.substring(0, 1900) + '...' : errorStack;
+      await logChannel.send({
+        content: `⚠️ **${title}**\n\`\`\`js\n${truncatedStack}\n\`\`\`\nTarih: ${new Date().toLocaleString('tr-TR')}`
       }).catch(console.error);
     }
   }
+};
+
+process.on('unhandledRejection', (error, promise) => {
+  console.error('Yakalanamayan Promise Reddi:', error);
+  logToChannel('Kritik Hata (Unhandled Rejection)', error);
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Yakalanamayan İstisna:');
-  console.error(`Hata: ${error}`);
-  console.error(error.stack || error);
-  
-  if (client.isReady() && config.logChannelId) {
-    const logChannel = client.channels.cache.get(config.logChannelId);
-    if (logChannel) {
-      logChannel.send({
-        content: `⚠️ **Kritik Hata Bilgisi**\n\`\`\`js\n${error.stack || error}\n\`\`\`\nTarih: ${new Date().toLocaleString('tr-TR')}`
-      }).catch(console.error);
-    }
-  }
+  console.error('Yakalanamayan İstisna:', error);
+  logToChannel('Kritik Hata (Uncaught Exception)', error);
 });
 
 process.on('SIGINT', () => {
@@ -78,7 +71,7 @@ module.exports = client;
 const fs = require("fs");
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
-  require("./events/"+file);
+  require("./events/" + file);
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ➤ | ${file} Eventi yüklendi!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)

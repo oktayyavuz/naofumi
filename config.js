@@ -1,10 +1,10 @@
 module.exports = {
-    token: "", // Discord bot tokeninizi buraya girin
+    token: process.env.TOKEN, // Discord bot tokeninizi .env dosyasından alır
     prefix: "n.", // Bot prefix'ini buraya girin
     botStatus: "Tate No Yuuusha", // Bot durumunu buraya girin
-    ownerID: "", // Bot sahibinin Discord ID'sini buraya girin
-    logChannelId: "", // Log kanalının ID'sini buraya girin
-    website: "https://oktaydev.online", // Bot web sitesi URL'si (opsiyonel)
+    ownerID: "1193730158042021988", // Bot sahibinin Discord ID'sini buraya girin
+    logChannelId: "1240045846800896020", // Log kanalının ID'sini buraya girin
+    website: "https://oktaydev.com", // Bot web sitesi URL'si (opsiyonel)
     embedColor: "#5865F2", // Varsayılan embed rengi
     embedErrorColor: "#ED4245", // Hata embedlerinin rengi
     embedSuccessColor: "#57F287", // Başarı embedlerinin rengi 

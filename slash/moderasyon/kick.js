@@ -7,13 +7,13 @@ module.exports = {
         {
             name: "kullanıcı",
             description: "Atılacak kullanıcı.",
-            type: 6, 
+            type: 6,
             required: true
         },
         {
             name: "sebep",
             description: "Atma sebebi.",
-            type: 3, 
+            type: 3,
             required: false
         }
     ],
@@ -23,20 +23,23 @@ module.exports = {
         }
 
         const targetUser = interaction.options.getUser("kullanıcı");
-        const targetMember = await interaction.guild.members.fetch(targetUser.id); 
+        const targetMember = await interaction.guild.members.fetch(targetUser.id);
 
         if (targetMember.roles.highest.position >= interaction.member.roles.highest.position) {
             return interaction.reply({ content: "Kendinizden yüksek veya eşit role sahip bir üyeyi atamazsınız.", ephemeral: true });
         }
-    const botMember = message.guild.members.cache.get(client.user.id);
+        const botMember = interaction.guild.members.cache.get(client.user.id);
+        const targetMemberRoles = targetMember.roles.highest.position;
+        const botRole = botMember.roles.highest.position;
+        const userRole = interaction.member.roles.highest.position;
 
-    if (targetUser.roles.highest.position >= botMember.roles.highest.position) {
-        return message.reply("Bu kullanıcıyı atamazsınız çünkü rolü benim rolümden yüksek veya eşit.");
-    }
+        if (targetMemberRoles >= botRole) {
+            return interaction.reply({ content: "Bu kullanıcıyı atamazsınız çünkü rolü benim rolümden yüksek veya eşit.", ephemeral: true });
+        }
 
-    if (targetUser.roles.highest.position >= message.member.roles.highest.position) {
-        return message.reply("Kendinizden yüksek veya eşit role sahip bir üyeyi atamazsınız.");
-    }
+        if (targetMemberRoles >= userRole) {
+            return interaction.reply({ content: "Kendinizden yüksek veya eşit role sahip bir üyeyi atamazsınız.", ephemeral: true });
+        }
         const reason = interaction.options.getString("sebep") || "Sebep belirtilmedi.";
 
         try {
@@ -49,12 +52,12 @@ module.exports = {
             return interaction.reply({ embeds: [embed] });
 
         } catch (error) {
-            if (error.code === 50013) { 
+            if (error.code === 50013) {
                 console.error("Üye atılırken hata oluştu: Botun yetkisi yetersiz.");
-                message.reply("Üye atılmaya çalışılırken bir hata oluştu: Botun yetkisi yetersiz.");
+                interaction.reply({ content: "Üye atılmaya çalışılırken bir hata oluştu: Botun yetkisi yetersiz.", ephemeral: true });
             } else {
                 console.error("Üye atılırken hata oluştu:", error);
-                message.reply("Üye atılmaya çalışılırken bir hata oluştu.");
+                interaction.reply({ content: "Üye atılmaya çalışılırken bir hata oluştu.", ephemeral: true });
             }
         }
     },

@@ -8,8 +8,10 @@ module.exports = {
     run: async (client, interaction) => {
         const message = interaction;  
 
+        await message.deferReply();
+
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-            return message.reply("Bu komutu kullanmak için yönetici yetkisine sahip olmalısınız.");
+            return message.editReply("Bu komutu kullanmak için yönetici yetkisine sahip olmalısınız.");
         }
 
         const whitelistCategories = ['kufur', 'capslock', 'spam', 'link', 'full'];
@@ -43,7 +45,7 @@ module.exports = {
             .setFooter({ text: `Komut ${message.user.tag} tarafından kullanıldı`, iconURL: message.user.displayAvatarURL({ dynamic: true }) })
             .setTimestamp();
 
-        const msg = await message.reply({ embeds: [embed], components: rows });
+        const msg = await message.editReply({ embeds: [embed], components: rows });
 
         const filter = i => whitelistCategories.some(category => i.customId === `whitelist_role_${category}`) && i.user.id === message.user.id;
         const collector = msg.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, time: 60000 });

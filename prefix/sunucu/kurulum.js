@@ -113,14 +113,13 @@ async function roleSetup(message) {
         { name: '☢️ Mute', color: "#878383", permissions: [PermissionsBitField.Flags.ViewChannel], hoist: false }
     ];
     
-    message.guild.roles.cache.forEach(async (role) => {
-        if (role.name !== '@everyone' && !role.managed) {
-            try {
-                await role.delete();
-            } catch (error) {
-            }
+    const existingRoles = message.guild.roles.cache.filter(role => role.name !== '@everyone' && !role.managed);
+    for (const [id, role] of existingRoles) {
+        try {
+            await role.delete().catch(() => {});
+        } catch (error) {
         }
-    });
+    }
     for (const roleData of rolesToCreate) {
         try {
             const createdRole = await message.guild.roles.create({
@@ -131,11 +130,12 @@ async function roleSetup(message) {
             });
 
             if (roleData.name === '☢️ Mute') {
-                message.guild.channels.cache.forEach(async (channel) => {
+                const channels = message.guild.channels.cache.filter(c => c.type !== ChannelType.GuildCategory);
+                for (const [id, channel] of channels) {
                     await channel.permissionOverwrites.edit(createdRole, {
                         SendMessages: false
-                    });
-                });
+                    }).catch(() => {});
+                }
             }
 
         } catch (error) {
@@ -204,11 +204,19 @@ async function emojiSetup(message) {
     fs.readdir(emojiFolder, async (err, files) => {
         if (err) {
             console.error('Emoji klasörü okunamadı:', err);
-            return message.reply('Emoji yükleme sırasında bir hata oluştu.');
+            if (message.channel) return message.reply('Emoji yükleme sırasında bir hata oluştu.');
+            return;
         }
 
         for (const file of files) {
-            const emojiName = path.parse(file).name;
+            let emojiName = path.parse(file).name;
+
+            // Sanitize emoji name: remove invalid characters (only alphanumeric and underscores allowed)
+            emojiName = emojiName.replace(/[^a-zA-Z0-9_]/g, '');
+
+            // Ensure name is within Discord's 2-32 character limit
+            if (emojiName.length < 2) emojiName = `emoji_${emojiName}`;
+            if (emojiName.length > 32) emojiName = emojiName.substring(0, 32);
 
             const existingEmoji = message.guild.emojis.cache.find(e => e.name === emojiName);
             if (existingEmoji) {
@@ -227,7 +235,11 @@ async function emojiSetup(message) {
             }
         }
 
-        message.reply('Emoji yükleme işlemi tamamlandı.');
+        if (message.channel) {
+            message.reply('Emoji yükleme işlemi tamamlandı.');
+        } else {
+            console.log('Emoji yükleme tamamlandı ancak kanal bulunamadı (ChannelNotCached).');
+        }
     });
 }
 

@@ -18,7 +18,8 @@
 - [🚀 Başlarken](#başlarken)
 - [👤 Yazar](#yazar)
 - [💾 Kurulum](#kurulum)
-- [✨ Yeni Özellikler v1.1.0](#yeni-özellikler-v100)
+- [🚀 Tüm Özellikler](#-tüm-özellikler)
+- [✨ Yeni Özellikler v1.2.0](#yeni-özellikler-v120)
 
 ---
 
@@ -31,7 +32,51 @@
 
 Öncelikle yerel makinenizde gerekli tüm araçların kurulu olduğundan emin olun ve ardından bu adımlara devam edin.
 
-## ✨ Yeni Özellikler v1.1.0
+---
+
+## 🚀 Tüm Özellikler
+
+Naofumi, sunucunuzu yönetmek ve canlandırmak için geniş bir özellik yelpazesi sunar:
+
+### 🛡️ Moderasyon
+- **Gelişmiş Ban/Kick**: Kullanıcıları yasaklayın veya atın.
+- **Zaman Aşımı (Timeout)**: Süreli susturma ve kaldırma.
+- **Kanal Yönetimi**: `nuke` ile kanalları sıfırlayın, `kilitle/aç` ile erişimi yönetin.
+- **Mesaj Temizleme**: Kanalları hızlıca temizleme.
+
+### ⚙️ Sistemler
+- **🎫 Destek (Ticket)**: HTML transkript destekli, butonlu bilet sistemi.
+- **🛡️ Koruma & Anti-Raid**: Sunucuyu saldırılara ve reklamlara karşı korur.
+- **🎭 Otorol & HG-BB**: Yeni üyelere otomatik rol ve karşılama mesajları.
+- **🎤 Özel Oda**: Kullanıcılara özel sesli kanal oluşturma sistemi.
+- **📊 Loglama**: Mesaj silme, düzenleme ve sunucu hareketlerini takip eder.
+
+### 💰 Ekonomi ve Eğlence
+- **💴 Okane Sistemi**: Günlük ödüller, bakiye ve kullanıcılar arası transfer.
+- **🎰 Casino**: Slot, Blackjack ve şans oyunları.
+- **🎮 Oyunlar**: Adam Asmaca, Sayı Tahmin, Kelime Zinciri.
+- **🏮 Anime Trivia**: Anime bilginizi ölçen yarışma sistemi.
+
+### 📊 Genel ve Bilgi
+- **🔍 Bilgi**: Sunucu, kullanıcı ve bot hakkında detaylı istatistikler.
+- **🖼️ Görsel**: Avatar, Banner (Kullanıcı/Sunucu) görüntüleme.
+- **🌡️ Hava Durumu**: Dünya genelinde anlık hava durumu bilgisi.
+- **📝 Snipe**: Silinen son mesajı görüntüleme.
+
+### 🎁 Çekiliş Sistemi
+- **🎉 Giveaway**: Kolayca çekiliş başlatın, kazananları belirleyin ve yedek talihliler seçin.
+
+---
+
+## ✨ Yeni Özellikler v1.2.0
+
+- **📄 Premium Bilet Transkriptleri**: Destek talepleri kapatıldığında otomatik olarak profesyonel HTML transkriptleri oluşturulur ve log kanalına gönderilir.
+- **🖼️ Napi-RS Canvas Entegrasyonu**: Görüntü işleme kütüphanesi `@napi-rs/canvas` ile değiştirilerek Windows VDS ortamlarında maksimum performans ve uyumluluk sağlandı.
+- **🚀 Bellek ve Performans Optimizasyonu**: Komut dosyalarındaki yinelenen olay dinleyicileri kaldırılarak bellek sızıntıları (memory leaks) tamamen giderildi.
+- **🛠️ Gelişmiş Etkileşim Yönetimi**: Discord etkileşimleri (`interaction`) artık daha güvenli bir şekilde işleniyor, "Etkileşim başarısız" hataları minimize edildi.
+- **🛡️ Gelişmiş Hata Yönetimi**: Moderasyon ve sistem komutlarında hata yakalama ve loglama mekanizmaları güçlendirildi.
+
+## ✨ Özellikler v1.1.0
 
 - **🌡️ Hava Durumu Komutu**: `/havadurumu [şehir]` ve `n.havadurumu [şehir]` ile dünya genelinde hava durumu bilgisi alabilirsiniz.
 - **🎰 Slot Makinesi**: `n.slot [miktar]` komutu ile ekonomi sistemi üzerinden şansınızı test edin.
@@ -55,7 +100,7 @@ git clone https://github.com/oktayyavuz/naofumi
 cd naofumi/
 
 # 📦 Gerekli paketleri yükleyin
-npm install
+npm install 
 
 # ⚙️ Kişisel ayarlar
 # config.js dosyasındaki gereksinimleri doldur
@@ -93,7 +138,7 @@ veya
 
 ## 👤 Yazar
 
-[Oktay Yavuz](https://oktaydev.com.tr/)
+[Oktay Yavuz](https://oktaydev.com/)
 
 ## 📄 Lisans
 
